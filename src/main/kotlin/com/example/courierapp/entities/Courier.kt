@@ -31,9 +31,19 @@ data class Courier(
 
     @OneToMany(mappedBy = "courier", cascade = [CascadeType.ALL])
     @JsonIgnore
-    var reviews: MutableList<Review> = mutableListOf()
+    var reviews: MutableList<Review> = mutableListOf(),
+
+    var role: Role = Role.COURIER
 
 // Add any additional methods or properties specific to the Courier entity
 ) {
     // Add any additional methods or properties specific to the Courier entity
+
+    fun getRating(): Float {
+        var sum = 0f
+        for (review in reviews) {
+            sum += review.rating!!
+        }
+        return sum / reviews.size
+    }
 }

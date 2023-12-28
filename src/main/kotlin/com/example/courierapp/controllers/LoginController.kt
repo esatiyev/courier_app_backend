@@ -1,25 +1,36 @@
 package com.example.courierapp.controllers
 
-//import com.example.courierapp.configs.JwtUtil
 import com.example.courierapp.entities.LoginRequest
 import com.example.courierapp.repositories.CustomerRepository
-//import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+//import org.springframework.security.authentication.AuthenticationManager
+//import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+//import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
+
+
 @RestController
-@RequestMapping("/api/login")
-class LoginController(private val customerRepository: CustomerRepository) {
+@RequestMapping("/api")
+class LoginController(private val customerRepository: CustomerRepository,
+//                      private val authenticationManager: AuthenticationManager
+) {
 
     data class LoginResponse(val message: String, val customerId: Long?)
 
-    @PostMapping
+    @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         println("Received login request: $loginRequest")
+//
+//        val authentication = authenticationManager.authenticate(
+//            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
+//        )
+//
+//        SecurityContextHolder.getContext().authentication = authentication
 
         return try {
             val customer = customerRepository.findCustomerByEmailAndPassword(
@@ -34,3 +45,4 @@ class LoginController(private val customerRepository: CustomerRepository) {
         }
     }
 }
+

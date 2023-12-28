@@ -32,6 +32,8 @@ class CustomerController(private val customerService: CustomerService) {
         } catch (e: IllegalArgumentException) {
             // Handle the case where the customer already exists
             ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)
+        } catch (e: Exception) {
+            ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message)
         }
     }
 

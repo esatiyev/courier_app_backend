@@ -20,6 +20,7 @@ class CourierController(private val courierService: CourierService,
     @GetMapping("/{courierId}")
     fun getCourierById(@PathVariable courierId: Long): ResponseEntity<out Any> {
         val courier = courierService.getCourierById(courierId)
+
         return if (courier.isPresent) {
             ResponseEntity.ok(courier.get())
         } else {

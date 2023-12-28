@@ -11,12 +11,15 @@ data class Package(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
-    var createdDate: String? = null, // Set the default to the current date
     var packageName: String? = null,
     var weight: Float? = null,
     var price: Float? = null,
     var deliveryMethod: String? = null,
+    var deliverLatitude: Double? = null,
+    var deliverLongitude: Double? = null,
     var deliverAddress: String? = null,
+    var pickUpLatitude: Double? = null,
+    var pickUpLongitude: Double? = null,
     var pickUpAddress: String? = null,
     var receiverFullName: String? = null,
     var receiverPhone: String? = null,
@@ -44,6 +47,12 @@ data class Package(
 ) {
     // Add any additional methods or properties specific to the Package entity
 
+    var createdDate: String? = null
+
+    init {
+        createdDate = formatDateTime(LocalDateTime.now())
+    }
+
     fun updatePackageStatus(newStatus: DeliveryStatus) {
         deliveryStatus = newStatus
         deliveryHistory.add(DeliveryHistory(newStatus, formatDateTime(LocalDateTime.now()), this))
@@ -51,7 +60,7 @@ data class Package(
 
     fun formatDateTime(dateTime: LocalDateTime): String {
         val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-        val dateFormatter = DateTimeFormatter.ofPattern("dd.mm.YYYY")
+        val dateFormatter = DateTimeFormatter.ofPattern("dd.MM.YYYY")
 
         val timeString = dateTime.format(timeFormatter)
         val dateString = dateTime.format(dateFormatter)

@@ -3,6 +3,7 @@ package com.example.courierapp.services
 import com.example.courierapp.entities.Customer
 import com.example.courierapp.repositories.CustomerRepository
 import com.example.courierapp.repositories.PackageRepository
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.NoSuchElementException
@@ -10,7 +11,8 @@ import kotlin.NoSuchElementException
 @Service
 class CustomerService(
     private val customerRepository: CustomerRepository,
-    private val packageRepository: PackageRepository
+    private val packageRepository: PackageRepository,
+//    private val passwordEncoder: BCryptPasswordEncoder
 ) {
     fun getCustomers(): List<Customer> = customerRepository.findAll()
 
@@ -42,26 +44,13 @@ class CustomerService(
         else if (customerRepository.existsByPhone(customer.phone!!))
             throw IllegalArgumentException("Customer with this phone number {${customer.phone}} already exists!")
 
-//        if (customer.email != null) {
-//            if (customerRepository.existsByEmail(customer.email!!)) {
-//                throw NoSuchElementException("Email already exists")
-//            }
-//        }
-//        if (customer.fin != null) {
-//            if (customerRepository.existsByFin(customer.fin!!)) {
-//                throw NoSuchElementException("FIN already exists")
-//            }
-//        }
-//        if (customer.serialNo != null) {
-//            if (customerRepository.existsBySerialNo(customer.serialNo!!)) {
-//                throw NoSuchElementException("Serial number already exists")
-//            }
-//        }
-//        if (customer.phone != null) {
-//            if (customerRepository.existsByPhone(customer.phone!!)) {
-//                throw NoSuchElementException("Phone number already exists")
-//            }
-//        }
+        if (customer.password == null)
+            throw IllegalArgumentException("Password cannot be null")
+
+
+//        val hashedPassword = passwordEncoder.encode(customer.password)
+//        customer.password = hashedPassword
+
         return customerRepository.save(customer)
     }
 
@@ -101,6 +90,9 @@ class CustomerService(
                 }
                 if (updatedCustomer.address != null)
                     address = updatedCustomer.address
+
+                if (updatedCustomer.isCourier != null)
+                    isCourier = updatedCustomer.isCourier
             }
             return customerRepository.save(customer)
         } else {

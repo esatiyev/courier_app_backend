@@ -25,26 +25,51 @@ dependencies {
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-//	implementation("com.h2database:h2:2.1.214")
 	implementation("com.mysql:mysql-connector-j")
 
-	// Add JWT dependencies in your build.gradle or build.gradle.kts
+	implementation("io.jsonwebtoken:jjwt-api:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-impl:0.12.3")
+	implementation("io.jsonwebtoken:jjwt-jackson:0.12.3")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+
+	testImplementation("org.springframework.security:spring-security-test")
+
+
+
+
+//	implementation("org.springframework.boot:spring-boot-starter-validation")
+//	implementation("org.springframework.boot:spring-boot-starter-thymeleaf") // If using Thymeleaf
+
+//	implementation("org.springframework.security:spring-security-config")
+//	implementation("org.springframework.security:spring-security-web")
+//	implementation("org.springframework.security:spring-security-core")
+
+//	implementation("org.springframework.boot:spring-boot-starter-security")
+
+
+	// JWT
+//	implementation("io.jsonwebtoken:jjwt:0.9.1")
+
+//	implementation("org.springframework.security:spring-security-web")
+//	implementation("org.springframework.security:spring-security-config")
+//
 //	implementation("io.jsonwebtoken:jjwt-api:0.11.2")
 //	implementation("io.jsonwebtoken:jjwt-impl:0.11.2")
 //	implementation("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
-//	implementation("org.springframework.boot:spring-boot-starter-security")
 
-//	implementation("com.h2database:h2:1.4.200")
+
+
+
 }
-
+ext["spring-security.version"]= "6.2.1"
+ext["spring.version"]= "6.1.2"
 tasks.withType<KotlinCompile> {
 	kotlinOptions {
 		freeCompilerArgs += "-Xjsr305=strict"
 		jvmTarget = "21"
 	}
 }
-
 tasks.withType<Test> {
 	useJUnitPlatform()
 }

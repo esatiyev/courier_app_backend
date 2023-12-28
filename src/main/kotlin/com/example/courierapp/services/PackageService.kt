@@ -59,7 +59,7 @@ class PackageService(
             if (packet.weight == null)
                 throw IllegalArgumentException("Weight cannot be null.")
 
-            packet.createdDate = packet.formatDateTime(LocalDateTime.now())
+//            packet.createdDate = packet.formatDateTime(LocalDateTime.now())
 
             packet.customer = customer.get()
             packageRepository.save(packet)

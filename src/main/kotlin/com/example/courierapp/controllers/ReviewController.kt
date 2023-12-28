@@ -35,8 +35,8 @@ class ReviewController(private val reviewService: ReviewService) {
 
     @PostMapping("/couriers/{courierId}")
     fun addReview(
-        @RequestBody review: Review,
-        @PathVariable courierId: Long
+        @PathVariable courierId: Long,
+        @RequestBody review: Review
     ): ResponseEntity<out Any> {
 //        val addedReview = reviewService.addReview(review, courierId)
 //        return ResponseEntity.created(URI.create("/api/reviews/${addedReview.id}"))

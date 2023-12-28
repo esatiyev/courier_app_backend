@@ -20,6 +20,7 @@ data class Customer(
     var gender: String? = null,
     var phone: String? = null,
     var address: String? = null,
+    var isCourier: Boolean? = false,
 
 //    @OneToOne(mappedBy = "customer", cascade = [CascadeType.ALL])
 //    @JoinColumn(name = "courier_id")
@@ -30,7 +31,10 @@ data class Customer(
     var packages: MutableList<Package>? = mutableListOf(),
 
     var ordersNumber: Int = 0,
-    var expenses: Float = 0f
+    var expenses: Float = 0f,
+
+    var role: Role = Role.CUSTOMER
 ) {
     // Add any additional methods or properties specific to the User entity
 }
+

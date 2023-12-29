@@ -35,6 +35,8 @@ dependencies {
 	testImplementation("org.springframework.security:spring-security-test")
 
 
+	implementation("org.springframework.boot:spring-boot-starter-data-rest")
+
 
 
 //	implementation("org.springframework.boot:spring-boot-starter-validation")

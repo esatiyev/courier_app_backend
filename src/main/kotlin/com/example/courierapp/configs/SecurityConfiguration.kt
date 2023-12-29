@@ -25,12 +25,24 @@ class SecurityConfiguration(
             .csrf { it.disable() }
             .authorizeHttpRequests {
                 it
-                    .requestMatchers("/api/auth", "/api/auth/refresh", "/error")
+                    .requestMatchers("/api/auth", "/api/auth/refresh", "/error.html", "/api/login", "/login", "/logout", "/index.html", "/customers.html", "/couriers.html",)
                     .permitAll()
-                    .requestMatchers (HttpMethod.POST,"/api/user")
+                    .requestMatchers (HttpMethod.POST,"/api/customers")
                     .permitAll()
-                    .requestMatchers ("/api/user**")
+                    .requestMatchers(HttpMethod.POST, "/api/couriers")
+                    .permitAll()
+                    .requestMatchers("/api/customers**", "/api/couriers**", "/api/packages**", "/api/reviews**", "/api/reviews/**")
                     .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.PUT, "/api/packages/couriers/**")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "api/reviews/couriers/**")
+                    .hasRole("ADMIN")
+                    .requestMatchers(HttpMethod.DELETE, "/api/packages/**")
+                    .hasAnyRole("ADMIN", "CUSTOMER", "COURIER")
+                    .requestMatchers(HttpMethod.GET, "/api/packages/**")
+                    .hasAnyRole("ADMIN", "CUSTOMER", "COURIER")
+                    .requestMatchers("/api/packages/couriers/**", "/api/packages/**")
+                    .hasAnyRole("ADMIN", "COURIER")
                     .anyRequest()
                     .fullyAuthenticated()
             }

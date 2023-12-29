@@ -1,74 +1,43 @@
-/*
 package com.example.courierapp.configs
 
-//import com.example.courierapp.services.MyUserDetailsServiceImpl
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.security.authentication.AuthenticationManager
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
+import org.springframework.http.HttpMethod
+import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.invoke
 import org.springframework.security.config.http.SessionCreationPolicy
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import org.springframework.security.web.SecurityFilterChain
-
+import org.springframework.security.web.DefaultSecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
 class SecurityConfiguration(
-//    private val myUserDetailsServiceImpl: MyUserDetailsServiceImpl,
+    private val authenticationProvider: AuthenticationProvider
 ) {
 
-
     @Bean
-    fun passwordEncoder(): BCryptPasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
-
-
-
-
-
-
-
-    @Bean
-    fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http {
-            authorizeRequests {
-                authorize("/admin.html", permitAll)
-                authorize("/api/login", permitAll)
-                authorize(anyRequest, authenticated)
+    fun securityFilterChain (
+        http: HttpSecurity,
+        jwtAuthenticationFilter: JwtAuthenticationFilter
+    ): DefaultSecurityFilterChain =
+        http
+            .csrf { it.disable() }
+            .authorizeHttpRequests {
+                it
+                    .requestMatchers("/api/auth", "/api/auth/refresh", "/error")
+                    .permitAll()
+                    .requestMatchers (HttpMethod.POST,"/api/user")
+                    .permitAll()
+                    .requestMatchers ("/api/user**")
+                    .hasRole("ADMIN")
+                    .anyRequest()
+                    .fullyAuthenticated()
             }
-            formLogin {
-//                loginPage = "/login"
-//                failureUrl = "/login?error"
+            .sessionManagement {
+                it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            logout {
-//                logoutUrl = "/logout"
-//                logoutSuccessUrl = "/login?logout"
-            }
-        }
-        return http.build()
-    }
-
-
-
-
-    @Bean
-    @Throws(Exception::class)
-    fun authenticationManager(http: HttpSecurity): AuthenticationManager {
-        return http.getSharedObject(AuthenticationManagerBuilder::class.java)
+            .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
-    }
-
-
-
-    @Throws(java.lang.Exception::class)
-    fun configure(auth: AuthenticationManagerBuilder) {
-        auth.userDetailsService(myUserDetailsServiceImpl)
-            .passwordEncoder(passwordEncoder())
-    }
-
-
-}*/
+}

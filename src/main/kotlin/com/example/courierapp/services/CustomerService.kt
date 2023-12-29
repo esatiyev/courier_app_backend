@@ -3,6 +3,7 @@ package com.example.courierapp.services
 import com.example.courierapp.entities.Customer
 import com.example.courierapp.repositories.CustomerRepository
 import com.example.courierapp.repositories.PackageRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
@@ -12,6 +13,7 @@ import kotlin.NoSuchElementException
 class CustomerService(
     private val customerRepository: CustomerRepository,
     private val packageRepository: PackageRepository,
+    private val encoder: PasswordEncoder
 //    private val passwordEncoder: BCryptPasswordEncoder
 ) {
     fun getCustomers(): List<Customer> = customerRepository.findAll()
@@ -48,10 +50,8 @@ class CustomerService(
             throw IllegalArgumentException("Password cannot be null")
 
 
-//        val hashedPassword = passwordEncoder.encode(customer.password)
-//        customer.password = hashedPassword
-
-        return customerRepository.save(customer)
+        val updatedCustomer = customer.copy(password = encoder.encode(customer.password))
+        return customerRepository.save(updatedCustomer)
     }
 
     fun updateCustomer(customerId: Long, updatedCustomer: Customer): Customer {

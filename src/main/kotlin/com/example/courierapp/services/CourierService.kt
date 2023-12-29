@@ -4,6 +4,7 @@ import com.example.courierapp.entities.Courier
 import com.example.courierapp.repositories.CourierRepository
 import com.example.courierapp.repositories.PackageRepository
 import com.example.courierapp.repositories.ReviewRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 import kotlin.NoSuchElementException
@@ -12,7 +13,8 @@ import kotlin.NoSuchElementException
 class CourierService(
     private val courierRepository: CourierRepository,
     private val packageRepository: PackageRepository,
-    private val reviewRepository: ReviewRepository
+    private val reviewRepository: ReviewRepository,
+    private val encoder: PasswordEncoder
 ) {
     fun getCouriers(): List<Courier> = courierRepository.findAll()
 
@@ -44,7 +46,10 @@ class CourierService(
                 throw NoSuchElementException("Phone number already exists")
             }
         }
-        return courierRepository.save(courier)
+
+
+        val updatedCourier = courier.copy(password = encoder.encode(courier.password))
+        return courierRepository.save(updatedCourier)
     }
 
     fun updateCourier(courierId: Long, updatedCourier: Courier): Courier {

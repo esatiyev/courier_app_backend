@@ -2,75 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Authentication Example</title>
+    <title>Main Page</title>
 </head>
 <body>
-<h1>Authentication Example</h1>
-
-<h2>Login</h2>
-
-<form id="authForm" onsubmit="authenticateUser(event)">
-    <label for="email">Email:</label>
-    <input type="email" id="email" name="email" required><br>
-
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required><br>
-
-    <button type="submit">Login</button>
-</form>
-
-<script>
-    function authenticateUser(event) {
-        event.preventDefault();
-
-        const email = document.getElementById('email').value;
-        const password = document.getElementById('password').value;
-
-        const authData = {
-            email: email,
-            password: password
-        };
-
-        // Perform POST request with JSON data
-        fetch('/api/auth', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(authData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Authentication successful:', data);
-                console.log('Token:', data.accessToken);
-                // Store the accessToken in local storage
-                localStorage.setItem('accessToken', data.accessToken);
-
-                // Handle successful authentication, e.g., redirect to another page
-                // window.location.href = '/customers.html';
-
-                // const redirectedUrl = 'http://localhost:8080/customers.html';
-                const redirectedUrl = `http://localhost:8080/customers.html?token=${data.accessToken}`;
-
-
-                // Open a new window with the redirected URL
-                const newWindow = window.open(redirectedUrl, '_blank');
-
-                // Optional: Focus on the new window
-                if (newWindow) {
-                    newWindow.focus();
-                }
-
-            })
-            .catch(error => {
-                console.error('Authentication failed:', error);
-                console.log("token: ", localStorage.getItem('accessToken'));
-                // Handle authentication failure, e.g., show an error message
-                alert('Authentication failed. Please check your credentials.');
-            });
-    }
-</script>
-
+<h1>Main Page</h1>
+Navigation
+<ul>
+    <li><a href="/auth.html">Authentication</a></li>
+    <li><a href="/admin.html">Admin</a></li>
+</ul>
 </body>
 </html>

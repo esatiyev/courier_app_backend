@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courier List</title>
+
+  <style>
+    table {
+      /*border-collapse: collapse;*/
+      width: 100%;
+    }
+
+    th, td {
+      padding: 8px;
+    }
+
+    /* Center the content within td */
+    td {
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<h1>Courier List</h1>
+
+<table border="1">
+  <thead>
+  <tr>
+    <th>ID</th>
+    <th>Firstname</th>
+    <th>Lastname</th>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Age</th>
+    <th>Role</th>
+    <th>FIN</th>
+    <th>Gender</th>
+    <th>Phone</th>
+    <th>Address</th>
+    <th>Serial Number</th>
+    <th>Password</th>
+    <!-- Add more columns as needed -->
+  </tr>
+  </thead>
+  <tbody id="courierTableBody">
+  <!-- Customer data will be dynamically inserted here -->
+  </tbody>
+</table>
+
+<script>
+  // Use this function to get the stored access token
+  function getAccessToken() {
+    return localStorage.getItem('accessToken');
+  }
+
+  // Example: Make a request to a protected endpoint with the stored token
+  function fetchCouriers() {
+    const accessToken = getAccessToken();
+
+    fetch('http://localhost:8080/api/couriers', {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    })
+            .then(response => response.json())
+            .then(data => {
+              // Handle the response
+              console.log('Couriers:', data);
+
+              // Dynamically create and fill the table with customer data
+              const tableBody = document.getElementById('courierTableBody');
+
+              data.forEach(courier => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                            <td>${courier.id}</td>
+                            <td>${courier.firstname}</td>
+                            <td>${courier.lastname}</td>
+                            <td>${courier.username}</td>
+                            <td>${courier.email}</td>
+                            <td>${courier.age}</td>
+                            <td>${courier.role}</td>
+                            <td>${courier.fin}</td>
+                            <td>${courier.gender}</td>
+                            <td>${courier.phone}</td>
+                            <td>${courier.address}</td>
+                            <td>${courier.serialNo}</td>
+                            <td>${courier.password}</td>
+                            <!-- Add more cells as needed -->
+                        `;
+                tableBody.appendChild(row);
+              });
+            })
+            .catch(error => {
+              console.error('Error:', error);
+              window.location.href = '/error.html';
+              // window.open('/error.html', '_self');
+            });
+  }
+
+  // Call fetchCustomers when the page loads
+  fetchCouriers();
+</script>
+</body>
+</html>

@@ -35,4 +35,5 @@ class Configuration {
     @Bean
     fun authenticationManager(config: AuthenticationConfiguration): AuthenticationManager =
         config.authenticationManager
+
 }

@@ -4,6 +4,7 @@ import com.example.courierapp.entities.Customer
 import com.example.courierapp.services.CustomerService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
@@ -29,6 +30,8 @@ class CustomerController(private val customerService: CustomerService) {
             val createdCustomer = customerService.createCustomer(customer)
             ResponseEntity.created(URI.create("/api/customers/${createdCustomer.id}"))
                 .body(createdCustomer)
+        } catch (e: HttpMessageNotReadableException) {
+            ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.message)
         } catch (e: IllegalArgumentException) {
             // Handle the case where the customer already exists
             ResponseEntity.status(HttpStatus.CONFLICT).body(e.message)

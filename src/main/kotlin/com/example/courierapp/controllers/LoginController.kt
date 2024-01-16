@@ -25,12 +25,6 @@ class LoginController(private val customerRepository: CustomerRepository,
     @PostMapping("/login")
     fun login(@RequestBody loginRequest: LoginRequest): ResponseEntity<LoginResponse> {
         println("Received login request: $loginRequest")
-//
-//        val authentication = authenticationManager.authenticate(
-//            UsernamePasswordAuthenticationToken(loginRequest.email, loginRequest.password)
-//        )
-//
-//        SecurityContextHolder.getContext().authentication = authentication
 
         return try {
             val customer = customerRepository.findCustomerByEmailAndPassword(

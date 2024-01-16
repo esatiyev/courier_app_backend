@@ -65,13 +65,13 @@ class CustomerService(
                     lastname = updatedCustomer.lastname
                 if (updatedCustomer.username != null && updatedCustomer.username != customer.username) {
                     if (customerRepository.existsByUsername(updatedCustomer.username!!)) {
-                        throw NoSuchElementException("Username already exists")
+                        throw IllegalArgumentException("Username already exists")
                     }
                     username = updatedCustomer.username
                 }
                 if (updatedCustomer.email != null && updatedCustomer.email != customer.email) {
                     if (customerRepository.existsByEmail(updatedCustomer.email!!)) {
-                        throw NoSuchElementException("Email already exists")
+                        throw IllegalArgumentException("Email already exists")
                     }
                     email = updatedCustomer.email
                 }
@@ -84,7 +84,7 @@ class CustomerService(
 
                 if (updatedCustomer.phone != null && updatedCustomer.phone != customer.phone) {
                     if (customerRepository.existsByPhone(updatedCustomer.phone!!)) {
-                        throw NoSuchElementException("Phone number already exists")
+                        throw IllegalArgumentException("Phone number already exists")
                     }
                     phone = updatedCustomer.phone
                 }

@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController
 class LoginController(private val customerRepository: CustomerRepository,
 //                      private val authenticationManager: AuthenticationManager
 ) {
-
     data class LoginResponse(val message: String, val customerId: Long?)
 
     @PostMapping("/login")

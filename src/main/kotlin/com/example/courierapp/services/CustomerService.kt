@@ -100,6 +100,22 @@ class CustomerService(
         }
     }
 
+    fun updateCustomerRole(customerId: Long, updatedCustomer: Customer): Customer {
+        val existingCustomer = customerRepository.findById(customerId)
+        if (existingCustomer.isPresent) {
+            val customer = existingCustomer.get()
+            customer.apply {
+                if (updatedCustomer.isCourier != null)
+                    isCourier = updatedCustomer.isCourier
+                if (updatedCustomer.role != null)
+                    role = updatedCustomer.role
+            }
+            return customerRepository.save(customer)
+        } else {
+            throw NoSuchElementException("Customer with id $customerId not found.")
+        }
+    }
+
     fun deleteCustomer(customerId: Long) {
         // Implement validation or additional logic if needed
 //        customerRepository.deleteById(customerId)

@@ -1,15 +1,20 @@
 package com.example.courierapp.controllers
 
 import com.example.courierapp.entities.Review
+import com.example.courierapp.services.CourierService
 import com.example.courierapp.services.ReviewService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.context.SecurityContextHolder
+import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.web.bind.annotation.*
 import java.net.URI
 
 @RestController
 @RequestMapping("/api/reviews")
-class ReviewController(private val reviewService: ReviewService) {
+class ReviewController(private val reviewService: ReviewService,
+                       private val courierService: CourierService
+) {
     @GetMapping
     fun getAllReviews(): List<Review> = reviewService.getAllReviews()
 
@@ -25,12 +30,27 @@ class ReviewController(private val reviewService: ReviewService) {
 
     @GetMapping("/couriers/{courierId}")
     fun getReviewsByCourierId(@PathVariable courierId: Long): ResponseEntity<out Any> {
-        return try {
-            val reviews = reviewService.getReviewsByCourierId(courierId)
-            ResponseEntity.ok(reviews)
+        val authentication = SecurityContextHolder.getContext().authentication
+        val authEmail = (authentication.principal as UserDetails).username
+        val roles = authentication.authorities.map { it.authority }
+        val isAdmin = roles.contains("ROLE_ADMIN")
+
+        try {
+            val courier = courierService.getCourierById(courierId)
+            if (courier.isPresent && (isAdmin || courier.get().email == authEmail)){
+                // show reviews for the courier only if it is an admin or the courierId is the same as the authenticated user
+                val reviews = reviewService.getReviewsByCourierId(courierId)
+                return ResponseEntity.ok(reviews)
+            }
         } catch (e: NoSuchElementException) {
-            ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
+        } catch (e: Exception) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message)
         }
+
+        if (isAdmin)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Courier with id $courierId not found!")
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this courier!")
     }
 
     @PostMapping("/couriers/{courierId}")
@@ -38,9 +58,6 @@ class ReviewController(private val reviewService: ReviewService) {
         @PathVariable courierId: Long,
         @RequestBody review: Review
     ): ResponseEntity<out Any> {
-//        val addedReview = reviewService.addReview(review, courierId)
-//        return ResponseEntity.created(URI.create("/api/reviews/${addedReview.id}"))
-//            .body(addedReview)
 
         return try {
             val addedReview = reviewService.addReview(review, courierId)

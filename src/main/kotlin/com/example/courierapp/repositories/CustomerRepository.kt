@@ -15,5 +15,5 @@ interface CustomerRepository: JpaRepository<Customer, Long> {
     fun findCustomerByEmailAndPassword(email: String, password: String): Customer
     fun existsCustomerByEmailAndPassword(email: String, password: String): Boolean
     fun findByEmailAndPassword(email: String, password: String): Customer
-    fun findByEmail(id: String): Customer?
+    fun findByEmail(id: String): Customer?  // id is email actually
 }

@@ -33,7 +33,7 @@ data class Customer(
     var ordersNumber: Int = 0,
     var expenses: Float = 0f,
 
-    var role: Role = Role.CUSTOMER
+    var role: Role? = Role.CUSTOMER
 ) {
     // Add any additional methods or properties specific to the User entity
 }

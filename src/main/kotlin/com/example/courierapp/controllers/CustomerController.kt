@@ -25,7 +25,8 @@ class CustomerController(private val customerService: CustomerService) {
 
         val customer = customerService.getCustomerById(customerId)
         if (customer.isPresent) {
-            if(isAdmin || customer.get().email == authEmail) return ResponseEntity.ok(customer.get())
+            if(isAdmin || customer.get().email == authEmail)
+                return ResponseEntity.ok(customer.get())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this customer!")
         } else {
             return if (isAdmin)
@@ -84,8 +85,6 @@ class CustomerController(private val customerService: CustomerService) {
 
     @DeleteMapping("/{customerId}")
     fun deleteCustomer(@PathVariable customerId: Long): ResponseEntity<out Any> {
-//        customerService.deleteCustomer(customerId)
-//        return ResponseEntity.noContent().build()
         val authentication = SecurityContextHolder.getContext().authentication
         val authEmail = (authentication.principal as UserDetails).username
         val roles = authentication.authorities.map { it.authority }

@@ -1,7 +1,9 @@
 package com.example.courierapp.configs
 
+import com.example.courierapp.exception.ExpiredJwtException
 import com.example.courierapp.services.CustomUserDetailsService
 import com.example.courierapp.services.TokenService
+import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -31,17 +33,32 @@ class JwtAuthenticationFilter(
         }
 
         val jwtToken = authHeader!!.extractTokenValue()
-        val email = tokenService.extractEmail(jwtToken)
+        val email: String?
+//        try {
+        try {
+            email = tokenService.extractEmail(jwtToken)
 
-        if (email != null && SecurityContextHolder.getContext().authentication == null) {
-            val foundUser = userDetailsService.loadUserByUsername(email)
-
-            if (tokenService.isValid(jwtToken, foundUser)) {
-                updateContext(foundUser, request)
-            }
-
-            filterChain.doFilter(request, response)
+        } catch (e: io.jsonwebtoken.ExpiredJwtException){
+            throw ExpiredJwtException("Token is expired!")
+        } catch (e: SignatureException){
+            throw ExpiredJwtException("Token is invalid!")
+        } catch (e: Exception){
+            throw ExpiredJwtException("Token is wrong!")
         }
+
+            if (email != null && SecurityContextHolder.getContext().authentication == null) {
+                val foundUser = userDetailsService.loadUserByUsername(email)
+
+                if (tokenService.isValid(jwtToken, foundUser)) {
+                    updateContext(foundUser, request)
+                }
+
+                filterChain.doFilter(request, response)
+            }
+//        } catch (e: io.jsonwebtoken.ExpiredJwtException) {
+//            return
+//        }
+
     }
 
     private fun updateContext(foundUser: UserDetails, request: HttpServletRequest) {

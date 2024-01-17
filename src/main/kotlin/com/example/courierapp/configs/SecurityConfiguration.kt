@@ -1,8 +1,9 @@
 package com.example.courierapp.configs
 
+import jakarta.servlet.http.HttpServletResponse
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.http.HttpMethod
+import org.springframework.http.*
 import org.springframework.security.authentication.AuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
@@ -15,6 +16,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 class SecurityConfiguration(
     private val authenticationProvider: AuthenticationProvider
 ) {
+
+
     @Bean
     fun securityFilterChain (
         http: HttpSecurity,
@@ -56,7 +59,16 @@ class SecurityConfiguration(
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
+    /*        .exceptionHandling {
+//                it.disable()
+                it.authenticationEntryPoint { request, response, exception ->
+                    // Handle invalid/expired token exception
+                    response.setHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                    response.sendError(HttpStatus.UNAUTHORIZED.value(), "Invalid or expired token")
+                }
+            }*/
             .authenticationProvider(authenticationProvider)
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter::class.java)
             .build()
+
 }

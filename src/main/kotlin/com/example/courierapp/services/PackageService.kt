@@ -1,13 +1,11 @@
 package com.example.courierapp.services
 
-import com.example.courierapp.entities.DeliveryHistory
 import com.example.courierapp.entities.Package
 import com.example.courierapp.repositories.CourierRepository
 import com.example.courierapp.repositories.CustomerRepository
 import com.example.courierapp.repositories.PackageRepository
 import com.example.courierapp.repositories.ReviewRepository
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
 import java.util.*
 import kotlin.NoSuchElementException
 
@@ -20,7 +18,8 @@ class PackageService(
 ) {
     fun getAllPackages(): List<Package> = packageRepository.findAll()
 
-    fun getPackageById(packageId: Long): Optional<Package> = packageRepository.findById(packageId)
+    fun getPackageById(packageId: Long): Optional<Package> =
+        packageRepository.findById(packageId)
 
     fun getPackagesByCustomerId(customerId: Long): List<Package> {
         val customer = customerRepository.findById(customerId)
@@ -106,7 +105,7 @@ class PackageService(
         }
     }
 
-    fun removePackageFromCourier(courierId: Long) {
+    fun removePackagesFromCourier(courierId: Long) {
         val courier = courierRepository.findById(courierId)
         if (courier.isPresent) {
             for (packet in packageRepository.findByCourier(courier.get())) {

@@ -1,5 +1,6 @@
 package com.example.courierapp.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import java.time.LocalDate
 
@@ -15,6 +16,7 @@ data class Review(
     var reviewerFullName: String? = null,
     // properties...
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "courier_id")
     var courier: Courier? = null

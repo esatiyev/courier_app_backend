@@ -104,12 +104,15 @@ class CourierController(private val courierService: CourierService,
 
     @PutMapping("/{courierId}")
     fun updateCourier(@PathVariable courierId: Long,
-                      @RequestBody updatedCourier: Courier): ResponseEntity<out Any> {
+                      @RequestBody updatedCourier: Courier?): ResponseEntity<out Any> {
         val authentication = SecurityContextHolder.getContext().authentication
         val authEmail = (authentication.principal as UserDetails).username
         val roles = authentication.authorities.map { it.authority }
         val isAdmin = roles.contains("ROLE_ADMIN")
 
+        if (updatedCourier == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Required Courier object is missing!")
+        }
         try {
             val courier = courierService.getCourierById(courierId)
             val customer = customerService.getCustomerById(courierId)
@@ -129,7 +132,7 @@ class CourierController(private val courierService: CourierService,
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
         } catch (e: Exception) {
             // Handle other exceptions
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build()
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.message)
         }
 
         // if courier not found with specified ID
@@ -150,7 +153,7 @@ class CourierController(private val courierService: CourierService,
             if (courier.isPresent && (isAdmin || courier.get().email == authEmail)) {
                 // delete if courier exists and authorized to access it
                 reviewService.deleteReview(courierId)
-                packageService.removePackageFromCourier(courierId)
+                packageService.removePackagesFromCourier(courierId)
                 courierService.deleteCourier(courierId)
 
                 return ResponseEntity.status(HttpStatus.OK).body("Courier's reviews removed successfully\n" +

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration>
+    <Appenders>
+        <Console name="STDOUT">
+            <PatternLayout pattern="%m MDC%X%n"/>
+        </Console>
+
+
+        <!-- Add more File appenders for other controllers as needed -->
+        <File name="AuthFile" fileName="auth-log4j2.log">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+
+        <File name="MainLogFile" fileName="courierApp-log4j2.log">
+            <PatternLayout>
+                <pattern>%d %p %C{1.} [%t] %m%n</pattern>
+            </PatternLayout>
+        </File>
+    </Appenders>
+
+    <Loggers>
+        <Logger name="com.example.courierapp.controllers.auth" level="trace">
+            <AppenderRef ref="AuthFile"/>
+        </Logger>
+
+        <Logger name="com.example.courierapp" level="trace">
+            <AppenderRef ref="MainLogFile"/>
+        </Logger>
+
+        <Root level="info">
+            <AppenderRef ref="STDOUT"/>
+        </Root>
+    </Loggers>
+
+</Configuration>

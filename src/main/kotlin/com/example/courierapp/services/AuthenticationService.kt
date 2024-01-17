@@ -4,8 +4,13 @@ import com.example.courierapp.configs.JwtProperties
 import com.example.courierapp.controllers.auth.AuthenticationRequest
 import com.example.courierapp.controllers.auth.AuthenticationResponse
 import com.example.courierapp.repositories.RefreshTokenRepository
+import org.hibernate.engine.spi.ExceptionConverter
+import org.hibernate.internal.ExceptionConverterImpl
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.AuthenticationException
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Service
 import java.util.*
@@ -18,26 +23,44 @@ class AuthenticationService(
     private val jwtProperties: JwtProperties,
     private val refreshTokenRepository: RefreshTokenRepository
 ) {
+
+    private val logger: Logger = LoggerFactory.getLogger(AuthenticationService::class.java)
+
     fun authentication(authRequest: AuthenticationRequest): AuthenticationResponse {
-        authManager.authenticate(
-            UsernamePasswordAuthenticationToken(
-                authRequest.email,
-                authRequest.password
+        val accessToken: String
+        val refreshToken: String
+        try {
+            authManager.authenticate(
+                UsernamePasswordAuthenticationToken(
+                    authRequest.email,
+                    authRequest.password
+                )
             )
-        )
 
-        val user = userDetailsService.loadUserByUsername(authRequest.email)
+            val user = userDetailsService.loadUserByUsername(authRequest.email)
 
-        val accessToken = generateAccessToken(user)
+            accessToken = generateAccessToken(user)
 
-        val refreshToken = generateRefreshToken(user)
+            refreshToken = generateRefreshToken(user)
 
-        refreshTokenRepository.save(refreshToken, user)
+            refreshTokenRepository.save(refreshToken, user)
 
-        return AuthenticationResponse(
-            accessToken = accessToken,
-            refreshToken = refreshToken
-        )
+            logger.info("Authentication successful for user: {}", authRequest.email)
+
+            return AuthenticationResponse(
+                accessToken = accessToken,
+                refreshToken = refreshToken
+            )
+
+        } catch (e: AuthenticationException) {
+            logger.error("Authentication failed for user: {}", authRequest.email, e)
+            throw e
+        } catch (e: Exception) {
+            logger.error("Authentication failed for user: {}", authRequest.email, e)
+            throw e
+        }
+
+
     }
 
     fun refreshAccessToken(token: String): String? {

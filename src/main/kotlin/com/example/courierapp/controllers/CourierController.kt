@@ -7,6 +7,8 @@ import com.example.courierapp.services.CourierService
 import com.example.courierapp.services.CustomerService
 import com.example.courierapp.services.PackageService
 import com.example.courierapp.services.ReviewService
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.context.SecurityContextHolder
@@ -21,8 +23,14 @@ class CourierController(private val courierService: CourierService,
                         private val customerRepository: CustomerRepository,
                         private val reviewService: ReviewService,
                         private val packageService: PackageService) {
+
+    private val logger: Logger = LoggerFactory.getLogger(this::class.java)
+
     @GetMapping
-    fun getCouriers(): List<Courier> = courierService.getCouriers()
+    fun getCouriers(): List<Courier> {
+        logger.info("Received get couriers request by {}", getAuthenticatedEmail())
+        return courierService.getCouriers()
+    }
 
     @GetMapping("/{courierId}")
     fun getCourierById(@PathVariable courierId: Long): ResponseEntity<out Any> {
@@ -30,6 +38,8 @@ class CourierController(private val courierService: CourierService,
         val authEmail = (authentication.principal as UserDetails).username
         val roles = authentication.authorities.map { it.authority }
         val isAdmin = roles.contains("ROLE_ADMIN")
+
+        logger.info("Received get courier by ID request for ID: {} by {}", courierId, getAuthenticatedEmail())
 
         val courier = courierService.getCourierById(courierId)
         val customer = customerService.getCustomerById(courierId)
@@ -54,6 +64,8 @@ class CourierController(private val courierService: CourierService,
         val authEmail = (authentication.principal as UserDetails).username
         val roles = authentication.authorities.map { it.authority }
         val isAdmin = roles.contains("ROLE_ADMIN")
+
+        logger.info("Received create courier request by {}", getAuthenticatedEmail())
 
         val customer = customerRepository.findByEmail(authEmail)
         if (customer != null) {
@@ -86,6 +98,8 @@ class CourierController(private val courierService: CourierService,
                     val createdCourier = courierService.createCourier(newCourier)
                     val savedCustomer = customerService.updateCustomerRole(customer.id!!, customer)
 
+                    logger.info("Courier created successfully with ID: {} by {}", newCourier.id, getAuthenticatedEmail())
+
                     return ResponseEntity.created(URI.create("/api/couriers/${createdCourier.id}"))
                         .body(createdCourier)
                 } catch (e: NoSuchElementException) {
@@ -110,6 +124,8 @@ class CourierController(private val courierService: CourierService,
         val roles = authentication.authorities.map { it.authority }
         val isAdmin = roles.contains("ROLE_ADMIN")
 
+        logger.info("Received update courier request for ID: {} by {}", courierId, getAuthenticatedEmail())
+
         if (updatedCourier == null) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Required Courier object is missing!")
         }
@@ -119,6 +135,9 @@ class CourierController(private val courierService: CourierService,
             if (courier.isPresent && (isAdmin || courier.get().email == authEmail)) {
                 // update if courier exists and authorized to access it
                 val updated = courierService.updateCourier(courierId, updatedCourier)
+
+                logger.info("Courier updated successfully with ID: {} by {}", courierId, getAuthenticatedEmail())
+
                 return ResponseEntity.ok(updated)
             }
             if (customer.isPresent && (isAdmin || customer.get().email == authEmail)) {
@@ -148,6 +167,8 @@ class CourierController(private val courierService: CourierService,
         val roles = authentication.authorities.map { it.authority }
         val isAdmin = roles.contains("ROLE_ADMIN")
 
+        logger.info("Received delete courier request for ID: {} by {}", courierId, getAuthenticatedEmail())
+
         try {
             val courier = courierService.getCourierById(courierId)
             if (courier.isPresent && (isAdmin || courier.get().email == authEmail)) {
@@ -155,6 +176,8 @@ class CourierController(private val courierService: CourierService,
                 reviewService.deleteReview(courierId)
                 packageService.removePackagesFromCourier(courierId)
                 courierService.deleteCourier(courierId)
+
+                logger.info("Courier deleted successfully with ID: {} by {}", courierId, getAuthenticatedEmail())
 
                 return ResponseEntity.status(HttpStatus.OK).body("Courier's reviews removed successfully\n" +
                         "Package(s) removed from the courier!\n" +
@@ -172,4 +195,17 @@ class CourierController(private val courierService: CourierService,
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Courier with id $courierId not found!")
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this courier!")
     }
+
+
+    // Helper methods for logging
+    private fun getAuthenticatedEmail(): String {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return (authentication.principal as UserDetails).username
+    }
+
+/*    private fun checkIfAdmin(authentication: org.springframework.security.core.Authentication): Boolean {
+        val roles = authentication.authorities.map { it.authority }
+        return roles.contains("ROLE_ADMIN")
+    }*/
+
 }

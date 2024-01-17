@@ -7,6 +7,8 @@ import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.FilterChain
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.core.userdetails.UserDetails
@@ -20,6 +22,8 @@ class JwtAuthenticationFilter(
     private val tokenService: TokenService
 ) : OncePerRequestFilter() {
 
+    private val CustomLogger: Logger = LoggerFactory.getLogger(this::class.java)
+
     override fun doFilterInternal (
         request: HttpServletRequest,
         response: HttpServletResponse,
@@ -28,36 +32,39 @@ class JwtAuthenticationFilter(
         val authHeader: String? = request.getHeader("Authorization")
 
         if (authHeader.doesNotContainBearerToken()) {
+            CustomLogger.debug("No Bearer token found in the Authorization header. Proceeding with the next filter.")
             filterChain.doFilter(request, response)
             return
         }
 
         val jwtToken = authHeader!!.extractTokenValue()
         val email: String?
-//        try {
+
         try {
             email = tokenService.extractEmail(jwtToken)
 
         } catch (e: io.jsonwebtoken.ExpiredJwtException){
+            CustomLogger.error("Token is expired: {}", e.message)
             throw ExpiredJwtException("Token is expired!")
         } catch (e: SignatureException){
-            throw ExpiredJwtException("Token is invalid!")
+            CustomLogger.error("Token is invalid: {}", e.message)
+            throw SignatureException("Token is invalid!")
         } catch (e: Exception){
-            throw ExpiredJwtException("Token is wrong!")
+            CustomLogger.error("Error extracting email from token: {}", e.message)
+            throw e
         }
 
-            if (email != null && SecurityContextHolder.getContext().authentication == null) {
-                val foundUser = userDetailsService.loadUserByUsername(email)
+        if (email != null && SecurityContextHolder.getContext().authentication == null) {
+            val foundUser = userDetailsService.loadUserByUsername(email)
 
-                if (tokenService.isValid(jwtToken, foundUser)) {
-                    updateContext(foundUser, request)
-                }
-
-                filterChain.doFilter(request, response)
+            if (tokenService.isValid(jwtToken, foundUser)) {
+                updateContext(foundUser, request)
+            } else {
+                CustomLogger.warn("Invalid token for user: {}", email)
             }
-//        } catch (e: io.jsonwebtoken.ExpiredJwtException) {
-//            return
-//        }
+
+            filterChain.doFilter(request, response)
+        }
 
     }
 

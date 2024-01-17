@@ -1,0 +1,5 @@
+2024-01-18 00:54:27,367 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-6] Received authentication request: admin@gmail.com
+2024-01-18 01:00:26,719 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-3] Received authentication request: admin@gmail.com
+2024-01-18 01:01:18,426 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-2] Received authentication request: admin@gmail.com
+2024-01-18 01:01:51,502 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-3] Received authentication request: admin@gmail.com
+2024-01-18 01:02:30,880 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-4] Received authentication request: user1@gmail.com

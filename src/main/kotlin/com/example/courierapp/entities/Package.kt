@@ -1,5 +1,6 @@
 package com.example.courierapp.entities
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import jakarta.persistence.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -28,6 +29,10 @@ data class Package(
     var senderEmail: String? = null,
     var deliveryNote: String? = null,
 
+    var courierFullName: String? = null,
+    var courierPhone: String? = null,
+    var courierEmail: String? = null,
+
     @Enumerated(EnumType.STRING)
     @Column(name = "delivery_status")
     var deliveryStatus: DeliveryStatus = DeliveryStatus.PACKAGE_CREATED,
@@ -36,10 +41,12 @@ data class Package(
     @OneToMany(mappedBy = "packet", cascade = [CascadeType.ALL])
     val deliveryHistory: MutableList<DeliveryHistory> = mutableListOf(),
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "customer_id")
     var customer: Customer? = null,
 
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "courier_id")
     var courier: Courier? = null

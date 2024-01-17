@@ -48,3 +48,123 @@
 2024-01-18 01:04:14,788 INFO c.e.c.c.CourierController [http-nio-8080-exec-10] Received get courier by ID request for ID: 5 by user1@gmail.com
 2024-01-18 01:04:16,011 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-1] User details loaded successfully for username: user1@gmail.com
 2024-01-18 01:04:16,013 INFO c.e.c.c.CourierController [http-nio-8080-exec-1] Received get courier by ID request for ID: 4 by user1@gmail.com
+2024-01-18 01:07:55,204 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-3] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:07:59,052 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:03,477 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:11,312 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:25,896 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-1] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:52,142 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:52,356 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:55,791 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:57,011 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:57,222 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:58,298 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-1] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:08:58,358 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-2] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:08,271 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:08,272 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-5] Received authentication request: user1@gmail.com
+2024-01-18 01:09:08,278 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:09:08,399 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:09:08,399 INFO c.e.c.s.TokenService [http-nio-8080-exec-5] Generated token for user: user1@gmail.com
+2024-01-18 01:09:08,400 INFO c.e.c.s.TokenService [http-nio-8080-exec-5] Generated token for user: user1@gmail.com
+2024-01-18 01:09:08,400 INFO c.e.c.s.AuthenticationService [http-nio-8080-exec-5] Authentication successful for user: user1@gmail.com
+2024-01-18 01:09:08,463 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-7] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:08,527 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-6] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:13,419 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:13,467 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:15,174 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-2] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:15,226 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:16,698 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-3] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:18,451 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:18,503 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-7] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:19,955 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-6] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:19,992 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-8] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:09:20,011 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:20,063 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:22,222 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-1] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:22,272 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-2] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:24,056 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:24,083 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-3] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:09:24,103 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:24,169 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-7] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:25,800 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:25,852 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:30,743 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-1] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:30,807 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-2] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:39,615 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:39,617 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-5] Received authentication request: admin@gmail.com
+2024-01-18 01:09:39,621 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:09:40,111 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:09:40,112 INFO c.e.c.s.TokenService [http-nio-8080-exec-5] Generated token for user: admin@gmail.com
+2024-01-18 01:09:40,113 INFO c.e.c.s.TokenService [http-nio-8080-exec-5] Generated token for user: admin@gmail.com
+2024-01-18 01:09:40,113 INFO c.e.c.s.AuthenticationService [http-nio-8080-exec-5] Authentication successful for user: admin@gmail.com
+2024-01-18 01:09:40,169 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-7] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:40,233 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:41,127 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-6] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:41,166 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-10] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:09:41,171 INFO c.e.c.c.CustomerController [http-nio-8080-exec-10] Received get customers request by admin@gmail.com
+2024-01-18 01:09:41,201 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:48,290 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-3] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:48,349 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:50,102 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:50,210 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-7] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:09:50,214 INFO c.e.c.c.CourierController [http-nio-8080-exec-7] Received get couriers request by admin@gmail.com
+2024-01-18 01:09:50,225 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:51,399 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-6] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:51,448 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:53,145 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:55,969 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-3] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:56,020 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-4] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:58,073 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-5] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:09:58,137 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-8] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:10:10,234 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-9] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:10:10,298 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:16:36,524 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-4] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:36,530 INFO c.e.c.c.CustomerController [http-nio-8080-exec-4] Received get customer by ID request for ID: 15 by user1@gmail.com
+2024-01-18 01:16:38,974 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:38,976 INFO c.e.c.c.CustomerController [http-nio-8080-exec-5] Received get customer by ID request for ID: 9 by user1@gmail.com
+2024-01-18 01:16:41,019 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-8] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:44,777 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-7] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:44,780 INFO c.e.c.c.CustomerController [http-nio-8080-exec-7] Received get customer by ID request for ID: 8 by user1@gmail.com
+2024-01-18 01:16:47,413 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-6] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:47,416 INFO c.e.c.c.CustomerController [http-nio-8080-exec-6] Received get customer by ID request for ID: 7 by user1@gmail.com
+2024-01-18 01:16:49,088 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-9] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:16:49,091 INFO c.e.c.c.CustomerController [http-nio-8080-exec-9] Received get customer by ID request for ID: 8 by user1@gmail.com
+2024-01-18 01:23:55,356 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-2] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:23:55,358 INFO c.e.c.c.CustomerController [http-nio-8080-exec-2] Received get customer by ID request for ID: 8 by user1@gmail.com
+2024-01-18 01:31:41,891 INFO o.s.b.StartupInfoLogger [main] Starting CourierappApplicationKt using Java 21.0.1 with PID 9092 (C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1\build\classes\kotlin\main started by HP in C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1)
+2024-01-18 01:31:41,902 DEBUG o.s.b.StartupInfoLogger [main] Running with Spring Boot v3.2.0, Spring v6.1.1
+2024-01-18 01:31:41,903 INFO o.s.b.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-01-18 01:31:47,987 DEBUG o.s.w.f.GenericFilterBean [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-01-18 01:31:49,457 INFO o.s.b.StartupInfoLogger [main] Started CourierappApplicationKt in 8.234 seconds (process running for 9.42)
+2024-01-18 01:31:57,674 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-2] User details loaded successfully for username: user1@gmail.com
+2024-01-18 01:31:57,724 INFO c.e.c.c.CustomerController [http-nio-8080-exec-2] Received get customer by ID request for ID: 8 by user1@gmail.com
+2024-01-18 01:32:14,867 DEBUG c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-3] No Bearer token found in the Authorization header. Proceeding with the next filter.
+2024-01-18 01:32:14,924 INFO c.e.c.c.a.AuthController [http-nio-8080-exec-3] Received authentication request: admin@gmail.com
+2024-01-18 01:32:15,067 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-3] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:32:15,580 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-3] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:32:15,606 INFO c.e.c.s.TokenService [http-nio-8080-exec-3] Generated token for user: admin@gmail.com
+2024-01-18 01:32:15,607 INFO c.e.c.s.TokenService [http-nio-8080-exec-3] Generated token for user: admin@gmail.com
+2024-01-18 01:32:15,609 INFO c.e.c.s.AuthenticationService [http-nio-8080-exec-3] Authentication successful for user: admin@gmail.com
+2024-01-18 01:32:24,509 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-4] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:32:27,934 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:32:27,937 INFO c.e.c.c.PackageController [http-nio-8080-exec-5] Received get all packages request by admin@gmail.com
+2024-01-18 01:36:01,997 INFO o.s.b.StartupInfoLogger [main] Starting CourierappApplicationKt using Java 21.0.1 with PID 3832 (C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1\build\classes\kotlin\main started by HP in C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1)
+2024-01-18 01:36:02,005 DEBUG o.s.b.StartupInfoLogger [main] Running with Spring Boot v3.2.0, Spring v6.1.1
+2024-01-18 01:36:02,006 INFO o.s.b.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-01-18 01:36:07,196 DEBUG o.s.w.f.GenericFilterBean [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-01-18 01:36:08,481 INFO o.s.b.StartupInfoLogger [main] Started CourierappApplicationKt in 7.012 seconds (process running for 7.966)
+2024-01-18 01:39:04,954 INFO o.s.b.StartupInfoLogger [main] Starting CourierappApplicationKt using Java 21.0.1 with PID 21168 (C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1\build\classes\kotlin\main started by HP in C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1)
+2024-01-18 01:39:04,972 DEBUG o.s.b.StartupInfoLogger [main] Running with Spring Boot v3.2.0, Spring v6.1.1
+2024-01-18 01:39:04,975 INFO o.s.b.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-01-18 01:39:10,668 DEBUG o.s.w.f.GenericFilterBean [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-01-18 01:39:11,864 INFO o.s.b.StartupInfoLogger [main] Started CourierappApplicationKt in 7.572 seconds (process running for 8.819)
+2024-01-18 01:39:51,239 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-1] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:39:51,280 INFO c.e.c.c.PackageController [http-nio-8080-exec-1] Received get all packages request by admin@gmail.com
+2024-01-18 01:40:19,970 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-3] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:40:20,163 INFO c.e.c.c.PackageController [http-nio-8080-exec-3] Received create package request for customer ID: 4 by admin@gmail.com
+2024-01-18 01:41:09,150 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-5] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:41:09,214 INFO c.e.c.c.PackageController [http-nio-8080-exec-5] Received add package to courier request for package ID: 37 and courier ID: 5 by admin@gmail.com
+2024-01-18 01:41:22,958 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-4] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:41:22,971 INFO c.e.c.c.PackageController [http-nio-8080-exec-4] Received get package by ID request for ID: 34 by admin@gmail.com
+2024-01-18 01:41:33,279 INFO c.e.c.s.CustomUserDetailsService [http-nio-8080-exec-7] User details loaded successfully for username: admin@gmail.com
+2024-01-18 01:41:33,295 INFO c.e.c.c.PackageController [http-nio-8080-exec-7] Received get package by ID request for ID: 37 by admin@gmail.com

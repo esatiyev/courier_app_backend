@@ -1,5 +1,6 @@
 package com.example.courierapp.services
 
+import com.example.courierapp.entities.DeliveryStatus
 import com.example.courierapp.entities.Package
 import com.example.courierapp.repositories.CourierRepository
 import com.example.courierapp.repositories.CustomerRepository
@@ -59,7 +60,13 @@ class PackageService(
                 throw IllegalArgumentException("Weight cannot be null.")
 
 //            packet.createdDate = packet.formatDateTime(LocalDateTime.now())
-
+            packet.senderEmail = customer.get().email
+            packet.senderFullName = customer.get().firstname + " " + customer.get().lastname
+            packet.senderPhone = customer.get().phone
+            packet.courierEmail = null
+            packet.courierFullName = null
+            packet.courierPhone = null
+            packet.deliveryStatus = DeliveryStatus.PACKAGE_CREATED
             packet.customer = customer.get()
             packageRepository.save(packet)
         } else {
@@ -77,6 +84,9 @@ class PackageService(
                     throw IllegalArgumentException("Package already assigned to a courier.")
 
                 packet.get().courier = courier.get()
+                packet.get().courierFullName = courier.get().firstname + " " + courier.get().lastname
+                packet.get().courierEmail = courier.get().email
+                packet.get().courierPhone = courier.get().phone
                 packageRepository.save(packet.get())
             } else {
                 throw NoSuchElementException("Package with id $packageId not found.")
@@ -110,6 +120,9 @@ class PackageService(
         if (courier.isPresent) {
             for (packet in packageRepository.findByCourier(courier.get())) {
                 packet.courier = null
+                packet.courierEmail = null
+                packet.courierFullName = null
+                packet.courierPhone = null
                 packageRepository.save(packet)
             }
         } else {

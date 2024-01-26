@@ -19,6 +19,11 @@ class PackageService(
 ) {
     fun getAllPackages(): List<Package> = packageRepository.findAll()
 
+    fun getAwaitingDeliveryPackages(authId: String): List<Package> {
+        val packages = packageRepository.findAll()
+        return packages.filter { it.customer?.id.toString() != authId && it.courier == null }
+    }
+
     fun getPackageById(packageId: Long): Optional<Package> =
         packageRepository.findById(packageId)
 
@@ -138,4 +143,5 @@ class PackageService(
             throw NoSuchElementException("Package with id $packageId not found.")
         }
     }
+
 }

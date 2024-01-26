@@ -63,20 +63,20 @@ class CustomerService(
                     firstname = updatedCustomer.firstname
                 if (updatedCustomer.lastname != null)
                     lastname = updatedCustomer.lastname
-                if (updatedCustomer.username != null && updatedCustomer.username != customer.username) {
+                if (updatedCustomer.username != null && updatedCustomer.username != username) {
                     if (customerRepository.existsByUsername(updatedCustomer.username!!)) {
                         throw IllegalArgumentException("Username already exists")
                     }
                     username = updatedCustomer.username
                 }
-                if (updatedCustomer.email != null && updatedCustomer.email != customer.email) {
+                if (updatedCustomer.email != null && updatedCustomer.email != email) {
                     if (customerRepository.existsByEmail(updatedCustomer.email!!)) {
                         throw IllegalArgumentException("Email already exists")
                     }
                     email = updatedCustomer.email
                 }
-                if (updatedCustomer.password != null && updatedCustomer.password != customer.password) {
-                    password = updatedCustomer.password
+                if (updatedCustomer.password != null && updatedCustomer.password != password) {
+                    password = encoder.encode(updatedCustomer.password)
                 }
 
                 if (updatedCustomer.age != null)
@@ -91,8 +91,6 @@ class CustomerService(
                 if (updatedCustomer.address != null)
                     address = updatedCustomer.address
 
-                if (updatedCustomer.isCourier != null)
-                    isCourier = updatedCustomer.isCourier
             }
             return customerRepository.save(customer)
         } else {

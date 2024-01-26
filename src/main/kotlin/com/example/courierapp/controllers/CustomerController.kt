@@ -1,6 +1,8 @@
 package com.example.courierapp.controllers
 
+import com.example.courierapp.entities.Courier
 import com.example.courierapp.entities.Customer
+import com.example.courierapp.services.CourierService
 import com.example.courierapp.services.CustomerService
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -13,28 +15,27 @@ import org.springframework.web.bind.annotation.*
 import java.net.URI
 @RestController
 @RequestMapping("/api/customers")
-class CustomerController(private val customerService: CustomerService) {
+class CustomerController(private val customerService: CustomerService,
+                         private val courierService: CourierService
+) {
 
     private val logger: Logger = LoggerFactory.getLogger(this::class.java)
 
     @GetMapping
     fun getCustomers(): List<Customer> {
-        logger.info("Received get customers request by {}", getAuthenticatedEmail())
+        logger.info("Received get customers request by ID {}", getAuthenticatedId())
         return  customerService.getCustomers()
     }
 
     @GetMapping("/{customerId}")
     fun getCustomerById(@PathVariable customerId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
-        logger.info("Received get customer by ID request for ID: {} by {}", customerId, getAuthenticatedEmail())
+        logger.info("Received get customer by ID request for ID: {} by ID {}", customerId, authId)
 
         val customer = customerService.getCustomerById(customerId)
         if (customer.isPresent) {
-            if(isAdmin || customer.get().email == authEmail)
+            if(isAdmin || customer.get().id.toString() == authId)
                 return ResponseEntity.ok(customer.get())
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this customer!")
         } else {
@@ -49,7 +50,7 @@ class CustomerController(private val customerService: CustomerService) {
         return try {
             val createdCustomer = customerService.createCustomer(customer)
 
-            logger.info("Customer created successfully with ID: {} by {}", createdCustomer.id, getAuthenticatedEmail())
+            logger.info("Customer created successfully with ID: {} ", createdCustomer.id)
 
             ResponseEntity.created(URI.create("/api/customers/${createdCustomer.id}"))
                 .body(createdCustomer)
@@ -66,25 +67,36 @@ class CustomerController(private val customerService: CustomerService) {
         }
     }
 
-    @PutMapping("/{customerId}")
+    @PatchMapping("/{customerId}")
     fun updateCustomer(
         @PathVariable customerId: Long,
         @RequestBody updatedCustomer: Customer
     ): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
-        logger.info("Received update customer request for ID: {} by {}", customerId, getAuthenticatedEmail())
+        logger.info("Received update customer request for ID: {} by {}", customerId, authId)
 
         try {
             val customer = customerService.getCustomerById(customerId)
-            if (customer.isPresent && (isAdmin || customer.get().email == authEmail)) {
+            if (customer.isPresent && (isAdmin || customer.get().id.toString() == authId)) {
                 // update if customer exists and authorized to access it
                 val updated = customerService.updateCustomer(customerId, updatedCustomer)
-
-                logger.info("Customer updated successfully with ID: {} by {}", customerId, getAuthenticatedEmail())
+                val courier = customerService.getCustomerById(customerId)
+                if (courier.isPresent){
+                    // update courier
+                    val updatedCourier = Courier(
+                        firstname = updatedCustomer.firstname,
+                        lastname = updatedCustomer.lastname,
+                        username = updatedCustomer.username,
+                        email = updatedCustomer.email,
+                        password = updatedCustomer.password,
+                        age = updatedCustomer.age,
+                        phone = updatedCustomer.phone,
+                    )
+                    courierService.updateCourier(customerId, updatedCourier)
+                    logger.info("Courier updated successfully with ID: {} by {}", customerId, authId)
+                }
+                logger.info("Customer updated successfully with ID: {} by {}", customerId, authId)
 
                 return ResponseEntity.ok(updated)
             }
@@ -110,20 +122,17 @@ class CustomerController(private val customerService: CustomerService) {
 
     @DeleteMapping("/{customerId}")
     fun deleteCustomer(@PathVariable customerId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
-        logger.info("Received delete customer request for ID: {} by {}", customerId, getAuthenticatedEmail())
+        logger.info("Received delete customer request for ID: {} by {}", customerId, authId)
 
         try {
             val customer = customerService.getCustomerById(customerId)
-            if (customer.isPresent && (isAdmin || customer.get().email == authEmail)) {
+            if (customer.isPresent && (isAdmin || customer.get().id.toString() == authId)) {
                 // delete if customer exists and authorized to access it
                 customerService.deleteCustomer(customerId)
 
-                logger.info("Customer deleted successfully with ID: {} by {}", customerId, getAuthenticatedEmail())
+                logger.info("Customer deleted successfully with ID: {} by {}", customerId, authId)
 
                 return ResponseEntity.status(HttpStatus.OK).body("Customer with id $customerId deleted successfully!")
             }
@@ -145,9 +154,17 @@ class CustomerController(private val customerService: CustomerService) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this customer!")
     }
 
+    private fun getIdAndRolePair(): Pair<String, Boolean> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val authId = (authentication.principal as UserDetails).username.toString()
+        val roles = authentication.authorities.map { it.authority }
+        val isAdmin = roles.contains("ROLE_ADMIN")
+        return Pair(authId, isAdmin)
+    }
+
 
     // Helper methods for logging
-    private fun getAuthenticatedEmail(): String {
+    private fun getAuthenticatedId(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         return (authentication.principal as UserDetails).username
     }

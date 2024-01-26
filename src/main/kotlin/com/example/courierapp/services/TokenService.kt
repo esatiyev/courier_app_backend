@@ -21,13 +21,15 @@ class TokenService (
     )
 
     fun generate(
+        userId: String, // user id
         userDetails: UserDetails,
         expirationDate: Date,
         additionalClaims: Map<String, Any> = emptyMap()
     ): String {
         val token = Jwts.builder()
             .claims()
-            .subject(userDetails.username)
+//            .subject(userDetails.username)
+            .subject(userId)
             .issuedAt(Date(System.currentTimeMillis()))
             .expiration(expirationDate)
             .add(additionalClaims)
@@ -35,13 +37,13 @@ class TokenService (
             .signWith(secretKey)
             .compact()
 
-        logger.info("Generated token for user: {}", userDetails.username)
+        logger.info("Generated token for user ID: {}", userId /*userDetails.username*/)
 
         return token
     }
 
 
-    fun extractEmail(token: String): String? =
+    fun extractId(token: String): String? =
         getAllClaims (token)
             .subject
     fun isExpired(token: String): Boolean =
@@ -50,9 +52,9 @@ class TokenService (
             .before (Date(System.currentTimeMillis()))
 
     fun isValid(token: String, userDetails: UserDetails): Boolean {
-        val email = extractEmail(token)
+        val id = extractId(token)
 
-        return userDetails.username == email && !isExpired(token)
+        return userDetails.username == id && !isExpired(token)
     }
 
     private fun getAllClaims (token: String): Claims {

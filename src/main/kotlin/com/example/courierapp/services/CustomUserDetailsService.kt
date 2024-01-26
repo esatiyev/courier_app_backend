@@ -31,12 +31,36 @@ class CustomUserDetailsService(
         }
     }
 
+    fun loadUserById(id: String): UserDetails {
+        try {
+            val customerById = userRepository.findById(id.toLong())
+            if (!customerById.isPresent || customerById.get().email == null) {
+                throw UsernameNotFoundException("UsernameNotFoundException: Not found!")
+            }
+            val user = customerById.get().mapToUserDetails()
+
+            logger.info("User details loaded successfully for user ID: {}", id)
+
+            return user
+        } catch (e: UsernameNotFoundException) {
+            logger.error("Error loading user details for user ID: {}", id, e)
+            throw e
+        }
+        catch (e: Exception) {
+            logger.error("Error loading user details for user ID: {}", id, e)
+            throw e
+        }
+    }
+
 
     private fun ApplicationUser.mapToUserDetails (): UserDetails =
         User.builder ()
-            .username(this.email)
+//            .username(this.email)
+            .username(this.id.toString())
             .password(this.password)
             .roles(this.role.name)
             .build()
+
+
 
 }

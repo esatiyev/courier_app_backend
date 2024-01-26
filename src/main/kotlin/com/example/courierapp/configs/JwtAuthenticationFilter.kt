@@ -38,10 +38,10 @@ class JwtAuthenticationFilter(
         }
 
         val jwtToken = authHeader!!.extractTokenValue()
-        val email: String?
+        val id: String?
 
         try {
-            email = tokenService.extractEmail(jwtToken)
+            id = tokenService.extractId(jwtToken)
 
         } catch (e: io.jsonwebtoken.ExpiredJwtException){
             CustomLogger.error("Token is expired: {}", e.message)
@@ -54,13 +54,13 @@ class JwtAuthenticationFilter(
             throw e
         }
 
-        if (email != null && SecurityContextHolder.getContext().authentication == null) {
-            val foundUser = userDetailsService.loadUserByUsername(email)
+        if (id != null && SecurityContextHolder.getContext().authentication == null) {
+            val foundUser = userDetailsService.loadUserById(id)
 
             if (tokenService.isValid(jwtToken, foundUser)) {
                 updateContext(foundUser, request)
             } else {
-                CustomLogger.warn("Invalid token for user: {}", email)
+                CustomLogger.warn("Invalid token for user: {}", id)
             }
 
             filterChain.doFilter(request, response)
@@ -73,6 +73,9 @@ class JwtAuthenticationFilter(
         authToken.details = WebAuthenticationDetailsSource().buildDetails(request)
 
         SecurityContextHolder.getContext().authentication = authToken
+
+        // Update the log message
+        CustomLogger.info("User ID {} authenticated. Security context updated.", foundUser.username)
     }
 
     private fun String?.doesNotContainBearerToken(): Boolean =

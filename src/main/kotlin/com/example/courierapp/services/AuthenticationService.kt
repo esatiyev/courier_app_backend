@@ -4,8 +4,6 @@ import com.example.courierapp.configs.JwtProperties
 import com.example.courierapp.controllers.auth.AuthenticationRequest
 import com.example.courierapp.controllers.auth.AuthenticationResponse
 import com.example.courierapp.repositories.RefreshTokenRepository
-import org.hibernate.engine.spi.ExceptionConverter
-import org.hibernate.internal.ExceptionConverterImpl
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.security.authentication.AuthenticationManager
@@ -21,7 +19,7 @@ class AuthenticationService(
     private val userDetailsService: CustomUserDetailsService,
     private val tokenService: TokenService,
     private val jwtProperties: JwtProperties,
-    private val refreshTokenRepository: RefreshTokenRepository
+    private val refreshTokenRepository: RefreshTokenRepository,
 ) {
 
     private val logger: Logger = LoggerFactory.getLogger(AuthenticationService::class.java)
@@ -64,7 +62,7 @@ class AuthenticationService(
     }
 
     fun refreshAccessToken(token: String): String? {
-        val extractedEmail = tokenService.extractEmail(token)
+        val extractedEmail = tokenService.extractId(token)
 
         return extractedEmail?.let { email ->
             val currentUserDetails = userDetailsService.loadUserByUsername(email)
@@ -79,11 +77,13 @@ class AuthenticationService(
     }
 
     private fun generateAccessToken(user: UserDetails) = tokenService.generate(
+        userId = user.username,
         userDetails = user,
         expirationDate = Date(System.currentTimeMillis() + jwtProperties.accessTokenExpiration)
     )
 
     private fun generateRefreshToken(user: UserDetails) = tokenService.generate(
+        userId = user.username,
         userDetails = user,
         expirationDate = Date(System.currentTimeMillis() + jwtProperties.refreshTokenExpiration)
     )

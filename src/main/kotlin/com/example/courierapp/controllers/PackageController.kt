@@ -24,23 +24,26 @@ class PackageController(private val packageService: PackageService,
 
     @GetMapping
     fun getAllPackages(): List<Package> {
-        logger.info("Received get all packages request by {}", getAuthenticatedEmail())
+        logger.info("Received get all packages request by {}", getAuthenticatedId())
         return packageService.getAllPackages()
     }
 
+    @GetMapping("/awaitingDelivery")
+    fun getAwaitingDeliveryPackages(): List<Package> {
+        val (authId, isAdmin) = getIdAndRolePair()
+        logger.info("Received get awaiting delivery packages request by {}", getAuthenticatedId())
+        return packageService.getAwaitingDeliveryPackages(authId)
+    }
 
     @GetMapping("/{packageId}")
     fun getPackageById(@PathVariable packageId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val packet = packageService.getPackageById(packageId)
-            if (packet.isPresent && (isAdmin || packet.get().customer?.email == authEmail || packet.get().courier?.email == authEmail)){
+            if (packet.isPresent && (isAdmin || packet.get().customer?.id.toString() == authId || packet.get().courier?.id.toString() == authId)){
                 // show customer or courier delivery package only if it is an admin or the customer or courier email is the same as the authenticated user
-                logger.info("Received get package by ID request for ID: {} by {}", packageId, getAuthenticatedEmail())
+                logger.info("Received get package by ID request for ID: {} by {}", packageId, authId)
 
                 return ResponseEntity.ok(packet.get())
             }
@@ -57,17 +60,14 @@ class PackageController(private val packageService: PackageService,
 
     @GetMapping("/customers/{customerId}")
     fun getPackagesByCustomerId(@PathVariable customerId: Long): ResponseEntity<out Any> {
-//        packageService.getPackagesByCustomerId(customerId)
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
+
 
         try {
             val customer = customerService.getCustomerById(customerId)
-            if (customer.isPresent && (isAdmin || customer.get().email == authEmail)){
+            if (customer.isPresent && (isAdmin || customer.get().id.toString() == authId)){
                 // show packages
-                logger.info("Received get packages by customer ID request for customer ID: {} by {}", customerId, getAuthenticatedEmail())
+                logger.info("Received get packages by customer ID request for customer ID: {} by {}", customerId, authId)
 
                 val packages = packageService.getPackagesByCustomerId(customerId)
                 return ResponseEntity.ok(packages)
@@ -87,23 +87,19 @@ class PackageController(private val packageService: PackageService,
 
     @GetMapping("/couriers/{courierId}")
     fun getPackagesByCourierId(@PathVariable courierId: Long): ResponseEntity<out Any> {
-//        packageService.getPackagesByCourierId(courierId)
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val courier = courierService.getCourierById(courierId)
             val customer = customerService.getCustomerById(courierId)
-            if(courier.isPresent && (isAdmin || courier.get().email == authEmail)) {
+            if(courier.isPresent && (isAdmin || courier.get().id.toString() == authId)) {
                 // show packages
                 val packages = packageService.getPackagesByCourierId(courierId)
 
-                logger.info("Received get packages by courier ID request for courier ID: {} by {}", courierId, getAuthenticatedEmail())
+                logger.info("Received get packages by courier ID request for courier ID: {} by {}", courierId, authId)
 
                 return ResponseEntity.ok(packages)
-            } else if(customer.isPresent && (isAdmin || customer.get().email == authEmail)){
+            } else if(customer.isPresent && (isAdmin || customer.get().id.toString() == authId)){
                 // notify if customer exists and authorized to access it
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with id $courierId is not Courier yet!")
             }
@@ -124,20 +120,16 @@ class PackageController(private val packageService: PackageService,
     fun createPackage(
         @RequestBody packet: Package,
         @PathVariable customerId: Long
-
     ): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val customer = customerService.getCustomerById(customerId)
-            if (customer.isPresent && (isAdmin || customer.get().email == authEmail)){
+            if (customer.isPresent && (isAdmin || customer.get().id.toString() == authId)){
                 // create package
                 val createdPackage = packageService.createPackage(packet, customerId)
 
-                logger.info("Received create package request for customer ID: {} by {}", customerId, getAuthenticatedEmail())
+                logger.info("Received create package request for customer ID: {} by {}", customerId, authId)
 
                 return ResponseEntity.created(URI.create("/api/packages/${createdPackage.id}")).body(createdPackage)
             }
@@ -157,24 +149,21 @@ class PackageController(private val packageService: PackageService,
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this customer!")
     }
 
-    @PutMapping("{packageId}/courier/{courierId}")
+    @PutMapping("/{packageId}/courier/{courierId}")
     fun addPackageToCourier(@PathVariable packageId: Long, @PathVariable courierId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val courier = courierService.getCourierById(courierId)
             val customer = customerService.getCustomerById(courierId)
-            if (courier.isPresent && (isAdmin || courier.get().email == authEmail)){
+            if (courier.isPresent && (isAdmin || courier.get().id.toString() == authId)){
                 // add package
                 packageService.addPackageToCourier(courierId, packageId)
 
-                logger.info("Received add package to courier request for package ID: {} and courier ID: {} by {}", packageId, courierId, getAuthenticatedEmail())
+                logger.info("Received add package to courier request for package ID: {} and courier ID: {} by {}", packageId, courierId, authId)
 
                 return ResponseEntity.noContent().build()
-            } else if (customer.isPresent && (isAdmin || customer.get().email == authEmail)) {
+            } else if (customer.isPresent && (isAdmin || customer.get().id.toString() == authId)) {
                 // notify if customer exists and authorized to access it
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Customer with id $courierId is not Courier yet!")
             }
@@ -200,18 +189,15 @@ class PackageController(private val packageService: PackageService,
         @PathVariable packageId: Long,
         @RequestBody updatedPackage: Package
     ): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val packet = packageService.getPackageById(packageId)
-            if (packet.isPresent && (isAdmin || packet.get().courier?.email == authEmail)){
+            if (packet.isPresent && (isAdmin || packet.get().courier?.id.toString() == authId)){
                 // update if package exists and authorized to access it
                 val updated = packageService.updatePackage(packageId, updatedPackage)
 
-                logger.info("Received update package request for package ID: {} by {}", packageId, getAuthenticatedEmail())
+                logger.info("Received update package request for package ID: {} by {}", packageId, authId)
 
                 return ResponseEntity.ok(updated)
             }
@@ -239,7 +225,7 @@ class PackageController(private val packageService: PackageService,
 //            val courier = courierService.getCourierById(courierId)
             packageService.removePackagesFromCourier(courierId)
 
-            logger.info("Packages removed from courier with ID: {} by {}", courierId, getAuthenticatedEmail())
+            logger.info("Packages removed from courier with ID: {} by {}", courierId, getAuthenticatedId())
 
             return ResponseEntity.status(HttpStatus.OK).body("Package(s) removed from the courier!")
         } catch (e: NoSuchElementException) {
@@ -250,12 +236,9 @@ class PackageController(private val packageService: PackageService,
 
     @DeleteMapping("/{packageId}")
     fun deletePackage(@PathVariable packageId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
-        logger.info("Received delete package request for ID: {} by {}", packageId, getAuthenticatedEmail())
+        logger.info("Received delete package request for ID: {} by {}", packageId, authId)
 
         try {
             val packet = packageService.getPackageById(packageId)
@@ -263,22 +246,22 @@ class PackageController(private val packageService: PackageService,
                 // delete if package exists and authorized to access it
                 if (isAdmin) {
                     packageService.deletePackage(packageId)
-                    logger.info("Package deleted successfully with ID: {} by {}", packageId, getAuthenticatedEmail())
+                    logger.info("Package deleted successfully with ID: {} by {}", packageId, authId)
                     return ResponseEntity.status(HttpStatus.OK).body("Package deleted successfully!")
                 }
-                if (packet.get().customer?.email == authEmail) {
+                if (packet.get().customer?.id.toString() == authId) {
                     if (packet.get().deliveryStatus == DeliveryStatus.PACKAGE_CREATED) {
                         packageService.deletePackage(packageId)
 
-                        logger.info("Package deleted successfully with ID: {} by {}", packageId, getAuthenticatedEmail())
+                        logger.info("Package deleted successfully with ID: {} by {}", packageId, authId)
 
                         return ResponseEntity.status(HttpStatus.OK).body("Package deleted successfully!")
                     }
-                    logger.warn("Attempt to delete package with ID: {} that cannot be deleted by {}", packageId, getAuthenticatedEmail())
+                    logger.warn("Attempt to delete package with ID: {} that cannot be deleted by {}", packageId, authId)
                     return ResponseEntity.status(HttpStatus.CONFLICT).body("Package cannot be deleted!")
                 }
 
-                logger.warn("Unauthorized attempt to delete package with ID: {} by {}", packageId, getAuthenticatedEmail())
+                logger.warn("Unauthorized attempt to delete package with ID: {} by {}", packageId, authId)
 
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this package!")
             }
@@ -293,11 +276,19 @@ class PackageController(private val packageService: PackageService,
 
         if (isAdmin)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Package with id $packageId not found!")
-        logger.warn("Unauthorized attempt to delete non-existent package with ID: {} by {}", packageId, getAuthenticatedEmail())
+        logger.warn("Unauthorized attempt to delete non-existent package with ID: {} by {}", packageId, authId)
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this package!")
     }
 
-    private fun getAuthenticatedEmail(): String {
+    private fun getIdAndRolePair(): Pair<String, Boolean> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val authId = (authentication.principal as UserDetails).username
+        val roles = authentication.authorities.map { it.authority }
+        val isAdmin = roles.contains("ROLE_ADMIN")
+        return Pair(authId, isAdmin)
+    }
+
+    private fun getAuthenticatedId(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         return (authentication.principal as UserDetails).username
     }

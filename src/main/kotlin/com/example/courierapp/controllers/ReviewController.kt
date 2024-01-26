@@ -21,7 +21,7 @@ class ReviewController(private val reviewService: ReviewService,
 
     @GetMapping
     fun getAllReviews(): List<Review> {
-        logger.info("Received get all reviews request by {}", getAuthenticatedEmail())
+        logger.info("Received get all reviews request by {}", getAuthenticatedId())
         return reviewService.getAllReviews()
     }
 
@@ -29,7 +29,7 @@ class ReviewController(private val reviewService: ReviewService,
     fun getReviewById(@PathVariable reviewId: Long): ResponseEntity<out Any> {
         val review = reviewService.getReviewById(reviewId)
         return if (review.isPresent) {
-            logger.info("Received get review by ID request for ID: {} by {}", reviewId, getAuthenticatedEmail())
+            logger.info("Received get review by ID request for ID: {} by {}", reviewId, getAuthenticatedId())
             ResponseEntity.ok(review.get())
         } else {
             logger.warn("Review with id {} not found for getReviewById", reviewId)
@@ -39,18 +39,15 @@ class ReviewController(private val reviewService: ReviewService,
 
     @GetMapping("/couriers/{courierId}")
     fun getReviewsByCourierId(@PathVariable courierId: Long): ResponseEntity<out Any> {
-        val authentication = SecurityContextHolder.getContext().authentication
-        val authEmail = (authentication.principal as UserDetails).username
-        val roles = authentication.authorities.map { it.authority }
-        val isAdmin = roles.contains("ROLE_ADMIN")
+        val (authId, isAdmin) = getIdAndRolePair()
 
         try {
             val courier = courierService.getCourierById(courierId)
-            if (courier.isPresent && (isAdmin || courier.get().email == authEmail)){
+            if (courier.isPresent && (isAdmin || courier.get().id.toString() == authId)){
                 // show reviews for the courier only if it is an admin or the courierId is the same as the authenticated user
                 val reviews = reviewService.getReviewsByCourierId(courierId)
 
-                logger.info("Received get reviews by courier ID request for courier ID: {} by {}", courierId, getAuthenticatedEmail())
+                logger.info("Received get reviews by courier ID request for courier ID: {} by {}", courierId, authId)
 
                 return ResponseEntity.ok(reviews)
             }
@@ -66,26 +63,26 @@ class ReviewController(private val reviewService: ReviewService,
         if (isAdmin)
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Courier with id $courierId not found!")
 
-        logger.warn("Unauthorized attempt to access reviews for courier with ID: {} by {}", courierId, getAuthenticatedEmail())
+        logger.warn("Unauthorized attempt to access reviews for courier with ID: {} by {}", courierId, authId)
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body("You are not authorized to access this courier!")
     }
 
-    @PostMapping("/couriers/{courierId}")
+    @PostMapping("/couriers/{courierEmail}")
     fun addReview(
-        @PathVariable courierId: Long,
+        @PathVariable courierEmail: String,
         @RequestBody review: Review
     ): ResponseEntity<out Any> {
 
         return try {
-            val addedReview = reviewService.addReview(review, courierId)
+            val addedReview = reviewService.addReview(review, courierEmail)
 
-            logger.info("Review added successfully with ID: {} by {}", addedReview.id, getAuthenticatedEmail())
+            logger.info("Review added successfully with ID: {} by {}", addedReview.id, getAuthenticatedId())
 
             ResponseEntity.created(URI.create("/api/reviews/${addedReview.id}"))
                 .body(addedReview)
         } catch (e: NoSuchElementException) {
             // Handle the exception and return a custom response
-            logger.warn("Courier with id {} not found for addReview", courierId)
+            logger.warn("Courier with id {} not found for addReview", courierEmail)
             ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.message)
         }
     }
@@ -95,7 +92,7 @@ class ReviewController(private val reviewService: ReviewService,
         return try {
             reviewService.deleteReview(courierId)
 
-            logger.info("Reviews removed successfully for courier with ID: {} by {}", courierId, getAuthenticatedEmail())
+            logger.info("Reviews removed successfully for courier with ID: {} by {}", courierId, getAuthenticatedId())
 
             ResponseEntity.status(HttpStatus.OK).body("Courier's reviews removed successfully")
         } catch (e: NoSuchElementException) {
@@ -106,7 +103,15 @@ class ReviewController(private val reviewService: ReviewService,
     }
 
 
-    private fun getAuthenticatedEmail(): String {
+    private fun getIdAndRolePair(): Pair<String, Boolean> {
+        val authentication = SecurityContextHolder.getContext().authentication
+        val authId = (authentication.principal as UserDetails).username
+        val roles = authentication.authorities.map { it.authority }
+        val isAdmin = roles.contains("ROLE_ADMIN")
+        return Pair(authId, isAdmin)
+    }
+
+    private fun getAuthenticatedId(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         return (authentication.principal as UserDetails).username
     }

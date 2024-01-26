@@ -27,14 +27,14 @@ class ReviewService(private val reviewRepository: ReviewRepository,
         }
     }
 
-    fun addReview(review: Review, courierId: Long): Review {
+    fun addReview(review: Review, courierEmail: String): Review {
         // Implement validation or additional logic if needed
-        val courier = courierRepository.findById(courierId)
+        val courier = courierRepository.findByEmail(courierEmail)
         if (courier.isPresent){
             review.courier = courier.get()
             return reviewRepository.save(review)
         } else {
-            throw NoSuchElementException("Courier with id $courierId not found.")
+            throw NoSuchElementException("Courier with id $courierEmail not found.")
         }
     }
 

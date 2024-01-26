@@ -66,7 +66,7 @@ class CourierService(
                     address = updatedCourier.address
 
                 if (updatedCourier.password != null && updatedCourier.password != courier.password) {
-                    password = updatedCourier.password
+                    password = encoder.encode(updatedCourier.password)
                 }
 
                 if (updatedCourier.age != null && updatedCourier.age != courier.age)

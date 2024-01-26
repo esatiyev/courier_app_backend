@@ -18641,3 +18641,13 @@ org.springframework.security.authentication.BadCredentialsException: Bad credent
 2024-01-26 06:40:05,090 INFO c.e.c.c.JwtAuthenticationFilter [http-nio-8080-exec-10] User ID 5 authenticated. Security context updated.
 2024-01-26 06:40:05,093 INFO c.e.c.c.PackageController [http-nio-8080-exec-9] Received get packages by customer ID request for customer ID: 5 by 5
 2024-01-26 06:40:05,094 INFO c.e.c.c.PackageController [http-nio-8080-exec-10] Received get packages by customer ID request for customer ID: 5 by 5
+2024-01-26 10:32:51,247 INFO o.s.b.StartupInfoLogger [main] Starting CourierappApplicationKt using Java 21.0.1 with PID 11796 (C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1\build\classes\kotlin\main started by HP in C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1)
+2024-01-26 10:32:51,257 DEBUG o.s.b.StartupInfoLogger [main] Running with Spring Boot v3.2.0, Spring v6.1.1
+2024-01-26 10:32:51,259 INFO o.s.b.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-01-26 10:32:58,345 DEBUG o.s.w.f.GenericFilterBean [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-01-26 10:33:00,105 INFO o.s.b.StartupInfoLogger [main] Started CourierappApplicationKt in 9.585 seconds (process running for 10.81)
+2024-01-26 10:45:35,871 INFO o.s.b.StartupInfoLogger [main] Starting CourierappApplicationKt using Java 21.0.1 with PID 11168 (C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1\build\classes\kotlin\main started by HP in C:\Users\HP\Desktop\SpringBoot\prj-courier-app-esatiyev-1)
+2024-01-26 10:45:35,880 DEBUG o.s.b.StartupInfoLogger [main] Running with Spring Boot v3.2.0, Spring v6.1.1
+2024-01-26 10:45:35,882 INFO o.s.b.SpringApplication [main] No active profile set, falling back to 1 default profile: "default"
+2024-01-26 10:45:52,132 DEBUG o.s.w.f.GenericFilterBean [main] Filter 'jwtAuthenticationFilter' configured for use
+2024-01-26 10:45:53,646 INFO o.s.b.StartupInfoLogger [main] Started CourierappApplicationKt in 18.392 seconds (process running for 19.628)

@@ -1,3 +1,6 @@
+#TERM PROJECT: Object Oriented Programming 2 (2023 Fall)
+## Courier App
+
 1. Introduction
 •	The Courier App project aims to provide a mobile application and backend system for managing courier services, enabling users to place orders, track deliveries, and optimize courier operations.
 2. Project Overview
